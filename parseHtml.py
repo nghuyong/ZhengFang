@@ -27,7 +27,7 @@ def getStudentInfor(response):
 
 # 从网页中解析课表信息
 def getClassScheduleFromHtml(response):
-    html = response.content.decode("gb2312")
+    html = response.content.decode("gb2312","ignore")
     soup = BeautifulSoup(html.decode("utf-8"), "html5lib")
     __VIEWSTATE = soup.findAll(name="input")[2]["value"]
     trs = soup.find(id="Table1").find_all('tr')

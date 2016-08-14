@@ -160,8 +160,8 @@ class ZhengFangSpider:
             year = onegrade["year"]
             term = onegrade["term"]
             try:
-                yearGrade = YearGrade.get(YearGrade.year == year , student == self.student)
-            except DoesNotExist:
+                yearGrade = YearGrade.get(YearGrade.year == year , YearGrade.student == self.student)
+            except:
                 yearGrade = YearGrade(year=year,student=self.student)
                 yearGrade.save()
             try:
@@ -219,16 +219,16 @@ if __name__ == "__main__":
 
     # 查找学生，若不存在则创建账号
     try:
-        student = Student.get(Student.studentnumber == "1030614418") #换成自己的，不要用我的账号测试！！
+        student = Student.get(Student.studentnumber == "1061314201") #换成自己的，不要用我的账号测试！！
     except Exception ,e:
-        student = Student(studentnumber="1030614418", password="342626199509064718")
+        student = Student(studentnumber="1061314201", password="zhouwenjie")
         student.save()
 
     spider = ZhengFangSpider(student,baseUrl="http://202.195.144.168/jndx") # 实例化爬虫
     spider.loginWithOutCode()
     if student.name is None:
         spider.getStudentBaseInfo()
-    spider.getStudentGrade()
-    spider.CalculateOneTermAndOneTearGPA()
-    # spider.getClassSchedule()
+    # spider.getStudentGrade()
+    # spider.CalculateOneTermAndOneTearGPA()
+    spider.getClassSchedule()
 
