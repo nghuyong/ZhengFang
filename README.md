@@ -1,6 +1,6 @@
 #正方教务系统助手
 The helper of ZhengFang System
-
+具体参见：http://blog.csdn.net/nghuyong/article/details/52203443
 ##1.项目定义
 这个项目实现了正方教务系统的一套API：
 包括模拟登陆，个人信息查询，课表获取，成绩查询等等。
