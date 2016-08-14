@@ -7,44 +7,45 @@ db = SqliteDatabase('ZhengFang.db')
 
 
 class Student(Model):
-    name = CharField(null=True)
-    urlName = CharField(null=True)
-    studentnumber = CharField(null=True)
-    password = CharField(null=True)
-    idCardNumber = CharField(null=True)
-    sex = CharField(null=True)
-    enterSchoolTime = CharField(null=True)
-    birthsday = CharField(null=True)
-    highschool = CharField(null=True)
-    nationality = CharField(null=True)
-    hometown = CharField(null=True)
-    politicsStatus = CharField(null=True)
-    college= CharField(null=True)
-    major = CharField(null=True)
-    classname = CharField(null=True)
-    gradeClass = CharField(null=True)
+    name = CharField(null=True)  # 姓名
+    urlName = CharField(null=True)  # url编码后的姓名
+    studentnumber = CharField(null=True)  # 学号
+    password = CharField(null=True)  # 教务系统密码
+    idCardNumber = CharField(null=True)  # 身份证号
+    sex = CharField(null=True)  # 性别
+    enterSchoolTime = CharField(null=True)  # 入学时间
+    birthsday = CharField(null=True)  # 出生日期
+    highschool = CharField(null=True)  # 毕业中学
+    nationality = CharField(null=True)  # 名族
+    hometown = CharField(null=True)  # 籍贯
+    politicsStatus = CharField(null=True)  # 政治面貌
+    college = CharField(null=True)  # 学院
+    major = CharField(null=True)  # 专业
+    classname = CharField(null=True)  # 所在班级
+    gradeClass = CharField(null=True)  # 年级
 
     class Meta:
         database = db
 
+
 class ClassSchedule(Model):
-    student = ForeignKeyField(Student,related_name="classSchedule")
-    year = CharField(null=True)
-    term = IntegerField(null=True)
+    student = ForeignKeyField(Student, related_name="classSchedule")  # 学生
+    year = CharField(null=True)  # 年度
+    term = IntegerField(null=True)  # 学期
 
     class Meta:
         database = db
 
 
 class Class(Model):
-    schedule = ForeignKeyField(ClassSchedule,related_name="classes")
-    name = CharField(null=True)
-    type = CharField(null=True)
-    timeInTheWeek = CharField(null=True)
-    timeInTheDay = CharField(null=True)
-    timeInTheTerm = CharField(null=True)
-    teacher = CharField(null=True)
-    location = CharField(null=True)
+    schedule = ForeignKeyField(ClassSchedule, related_name="classes")  # 归属课表
+    name = CharField(null=True)  # 课程名称
+    type = CharField(null=True)  # 课程性质
+    timeInTheWeek = CharField(null=True)  # 星期几
+    timeInTheDay = CharField(null=True)  # 第几节课
+    timeInTheTerm = CharField(null=True)  # 上课周数
+    teacher = CharField(null=True)  # 授课教师
+    location = CharField(null=True)  # 授课地点
 
     class Meta:
         database = db

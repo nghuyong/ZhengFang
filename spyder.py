@@ -21,6 +21,7 @@ class ZhengFangSpyder:
         self.session.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'
 
 
+    #含验证码登陆
     def login(self):
         loginurl = self.baseUrl+"/default2.aspx"
         response = self.session.get(loginurl)
@@ -55,6 +56,7 @@ class ZhengFangSpyder:
             print "成功进入教务系统！"
 
 
+    #绕过验证码登陆
     def loginWithOutCode(self):
         loginurl = self.baseUrl + "/default5.aspx"
         response = self.session.get(loginurl)
@@ -74,7 +76,7 @@ class ZhengFangSpyder:
             print "成功进入教务系统！"
 
 
-
+    #获取学生基本信息
     def getStudentBaseInfo(self):
         self.session.headers['Referer'] = self.baseUrl+"/xs_main.aspx?xh="+self.student.studentnumber
         url = self.baseUrl+"/xsgrxx.aspx?xh="+self.student.studentnumber+"&"
@@ -97,7 +99,8 @@ class ZhengFangSpyder:
         self.student.save()
         print "读取学生基本信息成功"
 
-    
+
+    #获取学生课表
     def getClassSchedule(self):
         url = self.baseUrl+"/xskbcx.aspx?xh=" + self.student.studentnumber + "&xm=" + self.student.urlName + "&gnmkdm=N121603"
         response = self.session.get(url, allow_redirects=False)

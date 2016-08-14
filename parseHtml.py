@@ -1,14 +1,9 @@
 # author: HuYong
 # coding=utf-8
 from bs4 import BeautifulSoup
-from lxml import etree
 
-def getInfoFromHtml(response, xpath):
-    content = response.content.decode('gb2312')
-    selector = etree.HTML(content)
-    infor = selector.xpath(xpath)[0]
-    return infor
 
+#从网页中解析学生信息
 def getStudentInfor(response):
     html = response.content.decode("gb2312")
     soup = BeautifulSoup(html.decode("utf-8"), "html5lib")
@@ -29,6 +24,8 @@ def getStudentInfor(response):
     d["gradeClass"] = soup.find(id="lbl_dqszj").string
     return d
 
+
+#从网页中解析课表信息
 def getClassScheduleFromHtml(response):
     html = response.content.decode("gb2312")
     soup = BeautifulSoup(html.decode("utf-8"), "html5lib")
