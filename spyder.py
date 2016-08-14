@@ -6,7 +6,7 @@ import urllib
 import datetime
 import requests
 from lxml import etree
-from ZhengFang.ParseHtml import getInfoFromHtml, getClassScheduleFromHtml, getStudentInfor
+from ZhengFang.parseHtml import  getClassScheduleFromHtml, getStudentInfor
 from ZhengFang.model import Student, db, ClassSchedule, Class
 
 
@@ -118,7 +118,7 @@ class ZhengFangSpyder:
             print "正在获取"+str(year)+"-"+str(year+1)+"学年第"+str(term)+"学期课表"
             classes = getClassScheduleFromHtml(response)["classes"]
             __VIEWSTATE = getClassScheduleFromHtml(response)["__VIEWSTATE"]
-            classSchedule = ClassSchedule(student=self.student,year=year,term=term)
+            classSchedule = ClassSchedule(student=self.student,year=str(year)+"-"+str(year+1),term=term)
             classSchedule.save()
             for each in classes:
                 oneClass = Class(schedule = classSchedule , name = each["name"] , type = each["type"] ,
@@ -137,17 +137,16 @@ class ZhengFangSpyder:
 
 
 
-
-
-try:
-    db.connect()
-    db.create_tables([Student, ClassSchedule,Class])
-except:
-    pass
-student = Student(studentnumber="1030614418",password="342626199509064718")
-student.save()
-spyder = ZhengFangSpyder(student)
-spyder.loginWithOutCode()
-spyder.getStudentBaseInfo()
-# spyder.getClassSchedule()
+if __name__ == "__main__":
+    try:
+        db.connect()
+        db.create_tables([Student, ClassSchedule,Class])
+    except Exception ,e:
+        print e
+    student = Student(studentnumber="1030614418",password="342626199509064718") #换成自己的，不要用我的账号测试！！
+    student.save()
+    spyder = ZhengFangSpyder(student)
+    spyder.loginWithOutCode()
+    spyder.getStudentBaseInfo()
+    spyder.getClassSchedule()
 
