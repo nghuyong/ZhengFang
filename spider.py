@@ -6,11 +6,11 @@ import urllib
 import datetime
 import requests
 from lxml import etree
-from ZhengFang.parseHtml import  getClassScheduleFromHtml, getStudentInfor
-from ZhengFang.model import Student, db, ClassSchedule, Class
+from peewee import DoesNotExist
+from ZhengFang.parseHtml import  getClassScheduleFromHtml, getStudentInfor, get__VIEWSTATE, getGrade
+from ZhengFang.model import Student, db, ClassSchedule, Class, YearGrade, OneLessonGrade, TermGrade
 
-
-class ZhengFangSpyder:
+class ZhengFangSpider:
 
     def __init__(self,student,baseUrl="http://202.195.144.168/jndx"):
         reload(sys)
@@ -102,6 +102,7 @@ class ZhengFangSpyder:
 
     #获取学生课表
     def getClassSchedule(self):
+        self.session.headers['Referer'] = self.baseUrl+"/xs_main.aspx?xh="+self.student.studentnumber
         url = self.baseUrl+"/xskbcx.aspx?xh=" + self.student.studentnumber + "&xm=" + self.student.urlName + "&gnmkdm=N121603"
         response = self.session.get(url, allow_redirects=False)
         __VIEWSTATE = getClassScheduleFromHtml(response)["__VIEWSTATE"]
@@ -136,20 +137,98 @@ class ZhengFangSpyder:
         print "成功获取课表"
 
 
+    # 获取学生绩点
+    def getStudentGrade(self):
+        url = self.baseUrl + "/xscjcx.aspx?xh=" + self.student.studentnumber + "&xm=" + self.student.urlName + "&gnmkdm=N121605"
+        self.session.headers['Referer'] = self.baseUrl + "/xs_main.aspx?xh=" + self.student.studentnumber
+        response = self.session.get(url)
+        __VIEWSTATE = get__VIEWSTATE(response)
+        self.session.headers['Referer'] = url
+        data = {
+            "__EVENTTARGET":"",
+            "__EVENTARGUMENT":"",
+            "__VIEWSTATE":__VIEWSTATE,
+            'hidLanguage':"",
+            "ddlXN":"",
+            "ddlXQ":"",
+            "ddl_kcxz":"",
+            "btn_zcj" : u"历年成绩".encode('gb2312', 'replace')
+        }
+        response = self.session.post(url,data=data)
+        grades = getGrade(response)
+        for onegrade in grades:
+            year = onegrade["year"]
+            term = onegrade["term"]
+            try:
+                yearGrade = YearGrade.get(YearGrade.year == year , student == self.student)
+            except DoesNotExist:
+                yearGrade = YearGrade(year=year,student=self.student)
+                yearGrade.save()
+            try:
+                termGrade = TermGrade.get(TermGrade.year == yearGrade , TermGrade.term == int(term))
+            except:
+                termGrade = TermGrade(year = yearGrade ,term = int(term))
+                termGrade.save()
+            try:
+                gradePoint = float(onegrade["gradePonit"])
+            except:
+                gradePoint = None
+            oneLessonGrade = OneLessonGrade(term=termGrade, name=onegrade["name"], type=onegrade["type"],
+                                            credit=float(onegrade["credit"]), gradePoint=gradePoint, grade=onegrade["grade"])
+            oneLessonGrade.save()
+        print "获取成绩成功"
 
 
+    # 计算每学期，每学年的绩点
+    def CalculateOneTermAndOneTearGPA(self):
+        years = self.student.grades
+        for year in years:
+            terms = year.terms
+            for term in terms:
+                sumCredit = 0.0
+                sumGrade = 0.0
+                grades = term.lessonsGrades
+                for grade in grades:
+                        if grade.gradePoint == None:
+                            continue
+                        sumGrade = sumGrade +(grade.credit * grade.gradePoint)
+                        sumCredit = sumCredit + grade.credit
+                termGPA = float( '%.2f'% (sumGrade/sumCredit))
+                term.termGPA = termGPA
+                term.termCredit = sumCredit
+                term.save()
+            sumGrade = 0.0
+            sumCredit = 0.0
+            for term in terms:
+                sumGrade += term.termGPA*term.termCredit
+                sumCredit += term.termCredit
+            year.yearGPA = float('%.2f' % (sumGrade/sumCredit))
+            year.yearCredit = sumCredit
+            year.save()
+        print "绩点计算完毕"
 
 
 if __name__ == "__main__":
+
+    # 连接数据库，建立数据表
     try:
         db.connect()
-        db.create_tables([Student, ClassSchedule,Class])
+        db.create_tables([Student, ClassSchedule,Class,YearGrade,TermGrade,OneLessonGrade])
+    except:
+        pass
+
+    # 查找学生，若不存在则创建账号
+    try:
+        student = Student.get(Student.studentnumber == "1030614418") #换成自己的，不要用我的账号测试！！
     except Exception ,e:
-        print e
-    student = Student(studentnumber="1030614418",password="342626199509064718") #换成自己的，不要用我的账号测试！！
-    student.save()
-    spyder = ZhengFangSpyder(student)
-    spyder.loginWithOutCode()
-    spyder.getStudentBaseInfo()
-    spyder.getClassSchedule()
+        student = Student(studentnumber="1030614418", password="342626199509064718")
+        student.save()
+
+    spider = ZhengFangSpider(student,baseUrl="http://202.195.144.168/jndx") # 实例化爬虫
+    spider.loginWithOutCode()
+    if student.name is None:
+        spider.getStudentBaseInfo()
+    spider.getStudentGrade()
+    spider.CalculateOneTermAndOneTearGPA()
+    # spider.getClassSchedule()
 

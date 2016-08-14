@@ -49,3 +49,28 @@ def getClassScheduleFromHtml(response):
                 oneClass["timeInTheTerm"] = oneClass["time"].split("{")[1][:-1]
                 classes.append(oneClass)
     return {"classes": classes, "__VIEWSTATE": __VIEWSTATE}
+
+
+def get__VIEWSTATE(response):
+    html = response.content.decode("gb2312")
+    soup = BeautifulSoup(html.decode("utf-8"), "html5lib")
+    __VIEWSTATE = soup.findAll(name="input")[2]["value"]
+    return __VIEWSTATE
+
+
+def getGrade(response):
+    html = response.content.decode("gb2312")
+    soup = BeautifulSoup(html.decode("utf-8"), "html5lib")
+    trs = soup.find(id="Datagrid1").findAll("tr")[1:]
+    Grades = []
+    for tr in trs:
+        tds = tr.findAll("td")
+        tds = tds[:2] + tds[3:5] + tds[6:9]
+        oneGradeKeys = ["year", "term", "name", "type", "credit","gradePonit","grade"]
+        oneGradeValues = []
+        for td in tds:
+            oneGradeValues.append(td.string)
+        oneGrade = dict((key, value) for key, value in zip(oneGradeKeys, oneGradeValues))
+        Grades.append(oneGrade)
+    return Grades
+

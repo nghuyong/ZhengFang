@@ -49,3 +49,36 @@ class Class(Model):
 
     class Meta:
         database = db
+
+
+class YearGrade(Model):
+    student = ForeignKeyField(Student, related_name="grades")  # 归属学生
+    year = CharField(null=True) # 学年
+    yearGPA = DoubleField(null=True)  # 学年GPA
+    yearCredit = DoubleField(null=True)  # 学年总学分
+
+    class Meta:
+        database = db
+
+
+class TermGrade(Model):
+    year = ForeignKeyField(YearGrade,related_name="terms")  # 归属学年
+    term = IntegerField(null=True) # 学期
+    termGPA = DoubleField(null=True) # 学期GPA
+    termCredit = DoubleField(null=True) #学期总学分
+
+    class Meta:
+        database = db
+
+
+
+class OneLessonGrade(Model):
+    term = ForeignKeyField(TermGrade, related_name="lessonsGrades")  # 归属学期
+    name = CharField(null=True)  # 课程名
+    type = CharField(null=True)  # 课程性质
+    credit = DoubleField(null=True)  # 学分
+    gradePoint = DoubleField(null=True)  # 绩点
+    grade = CharField(null=True)  # 成绩
+
+    class Meta:
+        database = db
