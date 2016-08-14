@@ -3,7 +3,7 @@
 from bs4 import BeautifulSoup
 
 
-#从网页中解析学生信息
+# 从网页中解析学生信息
 def getStudentInfor(response):
     html = response.content.decode("gb2312")
     soup = BeautifulSoup(html.decode("utf-8"), "html5lib")
@@ -25,7 +25,7 @@ def getStudentInfor(response):
     return d
 
 
-#从网页中解析课表信息
+# 从网页中解析课表信息
 def getClassScheduleFromHtml(response):
     html = response.content.decode("gb2312")
     soup = BeautifulSoup(html.decode("utf-8"), "html5lib")
@@ -48,4 +48,4 @@ def getClassScheduleFromHtml(response):
                 oneClass["timeInTheDay"] = oneClass["time"].split("{")[0][2:]
                 oneClass["timeInTheTerm"] = oneClass["time"].split("{")[1][:-1]
                 classes.append(oneClass)
-    return {"classes":classes,"__VIEWSTATE" :__VIEWSTATE}
+    return {"classes": classes, "__VIEWSTATE": __VIEWSTATE}
