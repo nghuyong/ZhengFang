@@ -1,5 +1,5 @@
 #正方教务系统助手
-The helper of ZhengFang System
+The helper of ZhengFang System 欢迎fork/star
 具体参见：http://blog.csdn.net/nghuyong/article/details/52203443
 ##1.项目定义
 这个项目实现了正方教务系统的一套API：
