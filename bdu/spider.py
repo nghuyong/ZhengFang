@@ -60,7 +60,7 @@ class ZhengFangSpider:
 
 
 if __name__ == "__main__":
-    student = BDU_Student("1605024113", "75^L*R7J7N6U")
+    student = BDU_Student("**换成学号****", "***换成密码*****")
     spider = ZhengFangSpider(student, baseUrl="http://jwgl.bdu.edu.cn/")  # 实例化爬虫
     spider.login()
     spider.getBasicInformation()
