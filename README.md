@@ -1,30 +1,36 @@
 # 正方教务系统助手
 The helper of ZhengFang System 欢迎fork/star
-具体参见：http://blog.csdn.net/nghuyong/article/details/52203443
+
+注意，该项目中的解析代码是2016年编写的，不保证可用于当前你学校的教务系统。
+
+不过项目的具体思路可用参见：http://blog.csdn.net/nghuyong/article/details/52203443
+
 ## 1.项目定义
 这个项目实现了正方教务系统的一套API：
 包括模拟登陆，个人信息查询，课表获取，成绩查询等等。
 随着API的不断完善于扩充，可以很方便的作为后台服务。
 比如教务系统手机客户端，桌面客户端，也可以作为某些特定应用需要学生课表，信息的后台。
 
-同时这个项目定义为助手，会继续开发便捷的工具：
+同时这个项目定义为助手，可以继续开发其他便捷的工具：
 * 自动完成评教任务
 * 期末新的成绩公布，邮件通知
 * 分学期，分学年绩点计算
 * 公选课抢课功能
 
-## 2.项目依赖
-* 爬虫相关：requests
-* 网页解析：lxml,BeautifulSoup
-* 数据存储：peewee
-* 数据库：Sqlite
-
-## 3.项目结构
+## 2.项目结构
 1. ZhengFang.db 数据库
 2. model.py 模型层，通过ORM与数据库相连
 3. spider.py 业务层，网页爬虫，**项目入口**
 4. parseHtml.py 业务层，网页解析工具
 
+## 3.如何使用
+```bash
+git clone git@github.com:nghuyong/ZhengFang.git
+cd ZhengFang/
+pip install -r requirements.txt
+# 将spider.py文件中的教务系统地址，账号，密码替换成你自己的
+python spider.py
+```
 
 ## 4.项目功能
 项目均已江南大学正方教务系统为例测试。若在你学校测试不通过欢迎开issue。

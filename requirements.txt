@@ -1,0 +1,4 @@
+peewee==3.2.2
+requests==2.19.1
+beautifulsoup4==4.6.3
+lxml==4.2.5
