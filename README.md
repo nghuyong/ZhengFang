@@ -1,6 +1,4 @@
 # 正方教务系统助手
-The helper of ZhengFang System 欢迎fork/star
-
 注意，该项目中的解析代码是2016年编写的，不保证可用于当前你学校的教务系统。
 
 不过项目的具体思路可用参见：http://blog.csdn.net/nghuyong/article/details/52203443
@@ -33,7 +31,8 @@ python spider.py
 ```
 
 ## 4.项目功能
-项目均已江南大学正方教务系统为例测试。若在你学校测试不通过欢迎开issue。
+项目均已江南大学正方教务系统为例测试
+
 ### 4.1模拟登陆
 登陆有两种方式
 
